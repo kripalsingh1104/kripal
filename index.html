@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>I Love You ❤️</title>
+<title>I Love You Bubu ❤️</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Quicksand:wght@300;400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Quicksand:wght@300;400;500&display=swap');
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -20,14 +20,9 @@
   body {
     background: var(--deep);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     font-family: 'Quicksand', sans-serif;
-    overflow: hidden;
+    overflow-x: hidden;
     cursor: default;
-    gap: 1.4rem;
   }
 
   canvas {
@@ -37,237 +32,271 @@
     z-index: 0;
   }
 
-  /* ── Card ── */
-  .card {
+  .floaters { position: fixed; inset:0; pointer-events:none; z-index:5; }
+  .fh {
+    position: absolute;
+    animation: floatUp linear forwards;
+    opacity: 0;
+  }
+  @keyframes floatUp {
+    0%   { opacity:0; transform: translateY(0) scale(.6); }
+    15%  { opacity:.8; }
+    85%  { opacity:.4; }
+    100% { opacity:0; transform: translateY(-100vh) scale(1.1); }
+  }
+
+  .page {
     position: relative;
     z-index: 10;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 2rem 1.2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  /* ── Top card ── */
+  .top-card {
+    width: 100%;
     background: linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
     border: 1px solid rgba(200,68,90,.25);
-    border-radius: 2.5rem;
-    padding: clamp(2rem, 5vw, 4rem) clamp(1.8rem, 6vw, 5rem);
-    max-width: 500px;
-    width: 90vw;
+    border-radius: 2.2rem;
+    padding: 2rem 1.8rem 1.5rem;
     text-align: center;
     backdrop-filter: blur(10px);
-    box-shadow: 0 0 80px rgba(200,68,90,.18);
+    box-shadow: 0 0 60px rgba(200,68,90,.15);
     animation: cardIn 1.2s cubic-bezier(.22,1,.36,1) both;
   }
 
   @keyframes cardIn {
-    from { opacity:0; transform: translateY(40px) scale(.94); }
+    from { opacity:0; transform: translateY(36px) scale(.94); }
     to   { opacity:1; transform: translateY(0) scale(1); }
   }
 
   .heart {
     display: inline-block;
-    font-size: clamp(3rem, 9vw, 5rem);
+    font-size: clamp(3rem, 9vw, 4.5rem);
     animation: heartbeat 1.4s ease-in-out infinite;
-    filter: drop-shadow(0 0 18px var(--rose));
-    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 14px var(--rose));
+    margin-bottom: .6rem;
   }
-
   @keyframes heartbeat {
     0%,100% { transform: scale(1); }
-    14%     { transform: scale(1.25); }
-    28%     { transform: scale(1.08); }
-    42%     { transform: scale(1.22); }
-    70%     { transform: scale(1); }
+    14%     { transform: scale(1.28); }
+    28%     { transform: scale(1.1); }
+    42%     { transform: scale(1.24); }
   }
 
   .headline {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.6rem, 8vw, 4.5rem);
+    font-size: clamp(2.4rem, 8vw, 4rem);
     font-weight: 300;
     font-style: italic;
     color: var(--cream);
-    line-height: 1.1;
-    margin-bottom: .4rem;
-    animation: fadeUp 1s .4s both;
+    line-height: 1.05;
+    margin-bottom: .3rem;
   }
+  .headline em { font-style: normal; color: var(--glow); text-shadow: 0 0 22px rgba(255,127,163,.5); }
 
-  .headline em {
-    font-style: normal;
-    color: var(--glow);
-    text-shadow: 0 0 24px rgba(255,127,163,.55);
-  }
-
-  .name-line {
-    font-size: clamp(.8rem, 2.2vw, .95rem);
-    color: var(--blush);
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    opacity: .7;
-    animation: fadeUp 1s .6s both;
-    margin-bottom: .5rem;
-  }
-
-  @keyframes fadeUp {
-    from { opacity:0; transform: translateY(16px); }
-    to   { opacity:1; transform: translateY(0); }
-  }
-
-  /* ── Message bubble box ── */
-  .msg-box {
-    position: relative;
-    z-index: 10;
-    max-width: 500px;
-    width: 90vw;
-    animation: cardIn 1.2s .3s cubic-bezier(.22,1,.36,1) both;
-  }
-
-  /* ── Tap hint ── */
-  .tap-hint {
-    font-size: .82rem;
-    color: rgba(242,184,198,.55);
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    margin-bottom: .7rem;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%,100% { opacity:.55; }
-    50%     { opacity:1; }
-  }
-
-  /* ── Bubble ── */
-  .bubble {
-    background: linear-gradient(135deg, rgba(200,68,90,.18), rgba(107,26,46,.22));
-    border: 1px solid rgba(200,68,90,.3);
-    border-radius: 1.6rem 1.6rem 1.6rem .4rem;
-    padding: 1.1rem 1.5rem;
-    cursor: pointer;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    transition: transform .12s, box-shadow .12s;
-    min-height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 4px 30px rgba(200,68,90,.1);
-    margin-bottom: .6rem;
-  }
-
-  .bubble:active { transform: scale(.97); }
-  .bubble:hover  { box-shadow: 0 0 30px rgba(255,127,163,.22); }
-
-  /* hidden state */
-  .bubble-text {
+  .bubu-line {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(1rem, 2.8vw, 1.15rem);
+    font-size: clamp(1.4rem, 5vw, 2rem);
     font-weight: 300;
-    color: rgba(253,240,244,.85);
-    line-height: 1.7;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity .5s ease, transform .5s ease;
-    pointer-events: none;
+    font-style: italic;
+    color: var(--blush);
+    margin-bottom: .3rem;
   }
 
-  .bubble.revealed .bubble-text {
-    opacity: 1;
-    transform: translateY(0);
+  .sub {
+    font-size: .72rem;
+    color: rgba(242,184,198,.55);
+    letter-spacing: .2em;
+    text-transform: uppercase;
   }
 
-  /* tap icon shown before reveal */
-  .tap-icon {
-    font-size: 1.6rem;
-    opacity: .45;
-    transition: opacity .3s;
-    position: absolute;
-  }
-
-  .bubble.revealed .tap-icon { opacity: 0; pointer-events: none; }
-
-  /* ── Progress dots ── */
-  .dots {
+  /* ── Bubu Dudu image strip ── */
+  .img-strip {
+    width: 100%;
     display: flex;
+    gap: .8rem;
     justify-content: center;
-    gap: .5rem;
-    margin-top: .8rem;
+    animation: cardIn 1.2s .2s cubic-bezier(.22,1,.36,1) both;
   }
 
-  .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: rgba(200,68,90,.3);
-    transition: background .4s, transform .3s;
-  }
-
-  .dot.done {
-    background: var(--rose);
-    transform: scale(1.2);
-  }
-
-  /* ── Floaters ── */
-  .floaters { position: fixed; inset:0; pointer-events:none; z-index:5; }
-  .fh {
-    position: absolute;
-    animation: floatUp linear infinite;
-    opacity: 0;
-  }
-
-  @keyframes floatUp {
-    0%   { opacity:0; transform: translateY(0) scale(.6); }
-    15%  { opacity:.7; }
-    85%  { opacity:.4; }
-    100% { opacity:0; transform: translateY(-100vh) scale(1.1); }
-  }
-
-  /* ── Final reveal ── */
-  .final-msg {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
+  .img-frame {
+    flex: 1;
+    max-width: 160px;
+    border-radius: 1.4rem;
+    overflow: hidden;
+    border: 1px solid rgba(200,68,90,.3);
+    box-shadow: 0 0 28px rgba(200,68,90,.12);
+    position: relative;
+    aspect-ratio: 1/1;
+    background: rgba(255,255,255,.04);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 1rem;
-    background: rgba(26,10,18,.92);
+    gap: .3rem;
+  }
+
+  .img-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .img-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(26,10,18,.85));
+    padding: .5rem .5rem .5rem;
+    text-align: center;
+    font-size: .7rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--blush);
+  }
+
+  /* placeholder emoji when no image */
+  .img-placeholder { font-size: 3.5rem; }
+
+  /* ── Tap messages ── */
+  .msg-section {
+    width: 100%;
+    animation: cardIn 1.2s .35s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  .tap-hint {
+    text-align: center;
+    font-size: .72rem;
+    color: rgba(242,184,198,.5);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-bottom: .6rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+  .bubble {
+    background: linear-gradient(135deg, rgba(200,68,90,.16), rgba(107,26,46,.2));
+    border: 1px solid rgba(200,68,90,.28);
+    border-radius: 18px 18px 18px 4px;
+    padding: .85rem 1.2rem;
+    margin-bottom: .55rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    transition: transform .12s, box-shadow .2s;
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(6px);
+  }
+  .bubble:hover { box-shadow: 0 0 20px rgba(255,127,163,.2); }
+  .bubble:active { transform: scale(.97); }
+
+  .b-icon {
+    font-size: 1.4rem;
+    opacity: .45;
+    position: absolute;
+    transition: opacity .3s;
+  }
+  .b-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.08rem;
+    font-weight: 300;
+    color: rgba(253,240,244,.88);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .45s, transform .45s;
+    text-align: center;
+    line-height: 1.55;
+    pointer-events: none;
+  }
+  .bubble.open .b-icon { opacity: 0; }
+  .bubble.open .b-text { opacity: 1; transform: translateY(0); }
+
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin: .6rem 0 0;
+  }
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(200,68,90,.25);
+    transition: background .4s, transform .3s;
+  }
+  .dot.done { background: var(--rose); transform: scale(1.2); }
+
+  /* ── Final overlay ── */
+  .final {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(26,10,18,.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: .8rem;
     opacity: 0;
     pointer-events: none;
     transition: opacity .8s;
     text-align: center;
     padding: 2rem;
   }
+  .final.show { opacity: 1; pointer-events: all; }
 
-  .final-msg.show { opacity: 1; pointer-events: all; }
+  .final-emoji { font-size: 3.5rem; animation: heartbeat 1.4s ease-in-out infinite; }
 
   .final-big {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3rem, 10vw, 6rem);
+    font-size: clamp(2.2rem, 8vw, 4rem);
     font-style: italic;
     font-weight: 300;
     color: var(--glow);
-    text-shadow: 0 0 40px rgba(255,127,163,.6);
-    animation: none;
+    text-shadow: 0 0 36px rgba(255,127,163,.55);
+    line-height: 1.1;
+  }
+
+  .final-names {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.2rem, 4vw, 1.6rem);
+    font-style: italic;
+    color: var(--blush);
+    opacity: .8;
   }
 
   .final-sub {
-    font-size: clamp(.9rem, 2.5vw, 1.1rem);
-    color: var(--blush);
+    font-size: .75rem;
+    color: rgba(242,184,198,.5);
     letter-spacing: .18em;
     text-transform: uppercase;
-    opacity: .75;
   }
 
   .restart-btn {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     background: transparent;
-    border: 1px solid rgba(200,68,90,.5);
+    border: 1px solid rgba(200,68,90,.45);
     color: var(--blush);
     font-family: 'Quicksand', sans-serif;
-    font-size: .85rem;
-    letter-spacing: .15em;
+    font-size: .75rem;
+    letter-spacing: .13em;
     text-transform: uppercase;
-    padding: .65rem 1.8rem;
+    padding: .55rem 1.5rem;
     border-radius: 2rem;
     cursor: pointer;
-    transition: background .3s, border-color .3s;
+    transition: background .25s;
   }
-  .restart-btn:hover { background: rgba(200,68,90,.15); border-color: var(--rose); }
+  .restart-btn:hover { background: rgba(200,68,90,.15); }
 </style>
 </head>
 <body>
@@ -275,178 +304,165 @@
 <canvas id="c"></canvas>
 <div class="floaters" id="floaters"></div>
 
-<!-- Top card -->
-<div class="card">
-  <div class="heart">❤️</div>
-  <h1 class="headline">I <em>Love</em> You</h1>
-  <p class="name-line">tap each heart to reveal</p>
+<div class="page">
+
+  <!-- Top card -->
+  <div class="top-card">
+    <div class="heart">❤️</div>
+    <h1 class="headline">I <em>Love</em> You</h1>
+    <p class="bubu-line">my Bubu 🐻</p>
+    <p class="sub">always &amp; forever, your Dudu 🐥</p>
+  </div>
+
+  <!-- Bubu Dudu image strip -->
+  <div class="img-strip">
+    <div class="img-frame">
+      <img src="https://i.pinimg.com/736x/2e/6e/92/2e6e92f2e9c8c5e6a1b3e5c7e6f2a1b3.jpg"
+           onerror="this.style.display='none';this.parentNode.querySelector('.img-placeholder').style.display='block'"
+           alt="Bubu">
+      <span class="img-placeholder" style="display:none">🐻</span>
+      <div class="img-label">Bubu 🐻</div>
+    </div>
+    <div class="img-frame">
+      <img src="https://i.pinimg.com/736x/2e/6e/92/2e6e92f2e9c8c5e6a1b3e5c7e6f2a1b3.jpg"
+           onerror="this.style.display='none';this.parentNode.querySelector('.img-placeholder').style.display='block'"
+           alt="Dudu">
+      <span class="img-placeholder" style="display:none">🐥</span>
+      <div class="img-label">Dudu 🐥</div>
+    </div>
+    <div class="img-frame">
+      <img src="https://i.pinimg.com/736x/2e/6e/92/2e6e92f2e9c8c5e6a1b3e5c7e6f2a1b3.jpg"
+           onerror="this.style.display='none';this.parentNode.querySelector('.img-placeholder').style.display='block'"
+           alt="Bubu & Dudu">
+      <span class="img-placeholder" style="display:none">🐻🐥</span>
+      <div class="img-label">Us 💕</div>
+    </div>
+  </div>
+
+  <!-- Tap messages -->
+  <div class="msg-section">
+    <p class="tap-hint">💬 tap to open each message</p>
+    <div id="bubbles"></div>
+    <div class="dots" id="dots"></div>
+  </div>
+
 </div>
 
-<!-- Tap messages -->
-<div class="msg-box">
-  <p class="tap-hint">💬 tap to open each message</p>
-  <div id="bubbles"></div>
-  <div class="dots" id="dots"></div>
-</div>
-
-<!-- Final full-screen reveal -->
-<div class="final-msg" id="finalMsg">
-  <div style="font-size:3.5rem">💖</div>
-  <div class="final-big">You are my everything</div>
-  <div class="final-sub">always &amp; forever, with all my heart</div>
+<!-- Final overlay -->
+<div class="final" id="finalMsg">
+  <div class="final-emoji">💖</div>
+  <div class="final-big">You are my everything, Bubu</div>
+  <div class="final-names">🐻 Bubu &amp; Dudu 🐥</div>
+  <div class="final-sub">forever &amp; always, with every heartbeat</div>
   <button class="restart-btn" onclick="restart()">↩ read again</button>
 </div>
 
 <script>
-const MESSAGES = [
-  "You make every ordinary day feel magical ✨",
+const MSGS = [
+  "Bubu, you make every ordinary day feel magical ✨",
   "Your smile is my favourite thing in the whole world 🌸",
   "I fall for you a little more every single day 💫",
   "You are my safe place, my peace, my home 🏡",
-  "Loving you is the best thing I have ever done ❤️",
-  "With you, forever would not be enough 🌹",
+  "I love you so much Bubu — more than words can say ❤️",
+  "With you, forever would never be enough 🌹",
+  "You are the best thing that ever happened to me 🐻🐥",
 ];
 
-const container = document.getElementById('bubbles');
-const dotsEl    = document.getElementById('dots');
-let revealed = 0;
+const bCont   = document.getElementById('bubbles');
+const dotCont = document.getElementById('dots');
+const finalEl = document.getElementById('finalMsg');
+let revealed  = 0;
 
-MESSAGES.forEach((msg, i) => {
-  // bubble
+MSGS.forEach((msg, i) => {
   const b = document.createElement('div');
   b.className = 'bubble';
-  b.innerHTML = `<span class="tap-icon">💌</span><span class="bubble-text">${msg}</span>`;
-  b.addEventListener('click', () => revealBubble(b, i));
-  b.addEventListener('touchstart', e => { e.preventDefault(); revealBubble(b, i); }, {passive:false});
-  container.appendChild(b);
+  b.innerHTML = `<span class="b-icon">💌</span><span class="b-text">${msg}</span>`;
+  const open = () => {
+    if (b.classList.contains('open')) return;
+    b.classList.add('open');
+    document.getElementById('dot'+i).classList.add('done');
+    burst(b);
+    revealed++;
+    if (revealed === MSGS.length) setTimeout(() => { finalEl.classList.add('show'); bigBurst(); }, 700);
+  };
+  b.addEventListener('click', open);
+  b.addEventListener('touchstart', e => { e.preventDefault(); open(); }, {passive:false});
+  bCont.appendChild(b);
 
-  // dot
   const d = document.createElement('div');
-  d.className = 'dot';
-  d.id = 'dot-' + i;
-  dotsEl.appendChild(d);
+  d.className = 'dot'; d.id = 'dot'+i;
+  dotCont.appendChild(d);
 });
 
-function revealBubble(b, i) {
-  if (b.classList.contains('revealed')) return;
-  b.classList.add('revealed');
-  document.getElementById('dot-' + i).classList.add('done');
-  burst(b);
-  revealed++;
-  if (revealed === MESSAGES.length) {
-    setTimeout(() => {
-      document.getElementById('finalMsg').classList.add('show');
-      bigBurst();
-    }, 800);
-  }
-}
-
 function restart() {
-  document.getElementById('finalMsg').classList.remove('show');
+  finalEl.classList.remove('show');
   revealed = 0;
   document.querySelectorAll('.bubble').forEach((b,i) => {
-    b.classList.remove('revealed');
-    document.getElementById('dot-'+i).classList.remove('done');
+    b.classList.remove('open');
+    document.getElementById('dot'+i).classList.remove('done');
   });
 }
 
-/* ── Burst effect on tap ── */
 const floaters = document.getElementById('floaters');
-const emojis = ['❤️','💗','🌸','💕','💖','🌹','✨'];
+const emojis = ['❤️','💗','🌸','💕','💖','🌹','✨','🐻','🐥'];
 
 function burst(el) {
   const rect = el.getBoundingClientRect();
   const cx = rect.left + rect.width/2;
   const cy = rect.top  + rect.height/2;
-  for (let i = 0; i < 10; i++) {
-    const e = document.createElement('span');
-    e.className = 'fh';
-    e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-    e.style.cssText = `
-      position:fixed;
-      left:${cx}px; top:${cy}px;
-      font-size:${(Math.random()*.8+.8).toFixed(2)}rem;
-      animation: floatUp ${(Math.random()*1.5+1.2).toFixed(1)}s ease-out forwards;
-      transform: translate(${(Math.random()*80-40).toFixed(0)}px, 0);
-    `;
-    floaters.appendChild(e);
-    setTimeout(() => e.remove(), 3000);
+  for (let i=0;i<10;i++){
+    const f = document.createElement('span');
+    f.className='fh';
+    f.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    const dx = (Math.random()*80-40).toFixed(0);
+    f.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;font-size:${(Math.random()*.8+.8).toFixed(2)}rem;animation-duration:${(Math.random()*1.2+1).toFixed(1)}s;transform:translateX(${dx}px)`;
+    floaters.appendChild(f);
+    setTimeout(()=>f.remove(),2500);
   }
 }
 
-function bigBurst() {
-  for (let i = 0; i < 40; i++) {
-    setTimeout(() => {
-      const e = document.createElement('span');
-      e.className = 'fh';
-      e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-      e.style.cssText = `
-        position:fixed;
-        left:${Math.random()*100}vw;
-        bottom:-2rem;
-        font-size:${(Math.random()*1.5+1).toFixed(2)}rem;
-        animation: floatUp ${(Math.random()*4+4).toFixed(1)}s linear forwards;
-      `;
-      floaters.appendChild(e);
-      setTimeout(() => e.remove(), 9000);
-    }, i * 80);
+function bigBurst(){
+  for(let i=0;i<50;i++){
+    setTimeout(()=>{
+      const f=document.createElement('span');
+      f.className='fh';
+      f.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      f.style.cssText=`position:absolute;left:${Math.random()*100}vw;bottom:-2rem;font-size:${(Math.random()*1.5+1).toFixed(2)}rem;animation-duration:${(Math.random()*4+4).toFixed(1)}s`;
+      floaters.appendChild(f);
+      setTimeout(()=>f.remove(),9000);
+    }, i*80);
   }
 }
 
-/* ── Starfield canvas ── */
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-let W, H, stars = [];
-
-function resize(){
-  W = canvas.width  = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-for(let i=0;i<140;i++) stars.push({
-  x: Math.random()*1000,
-  y: Math.random()*1000,
-  r: Math.random()*1.4+.3,
-  a: Math.random(),
-  da: (Math.random()*.007+.002)*(Math.random()<.5?1:-1)
-});
-
+/* Starfield */
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+let W,H,stars=[];
+function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize',resize);
+for(let i=0;i<140;i++) stars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.4+.3,a:Math.random(),da:(Math.random()*.007+.002)*(Math.random()<.5?1:-1)});
 function drawCanvas(){
   ctx.clearRect(0,0,W,H);
   for(const s of stars){
-    s.x = s.x/1000*W; s.y = s.y/1000*H;
-    s.a += s.da;
-    if(s.a<=0||s.a>=1) s.da*=-1;
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,127,163,${s.a*.65})`;
-    ctx.fill();
-    s.x = s.x/W*1000; s.y = s.y/H*1000;
+    s.a+=s.da; if(s.a<=0||s.a>=1) s.da*=-1;
+    ctx.beginPath(); ctx.arc(s.x*W,s.y*H,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,127,163,${s.a*.65})`; ctx.fill();
   }
   requestAnimationFrame(drawCanvas);
 }
 drawCanvas();
 
-/* ── Ambient floating hearts ── */
+/* Ambient floaters */
 function spawnHeart(){
-  const e = document.createElement('span');
-  e.className='fh';
-  e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-  e.style.cssText=`
-    position:absolute;
-    left:${Math.random()*100}vw;
-    bottom:-2rem;
-    font-size:${(Math.random()*1+.6).toFixed(2)}rem;
-    animation-duration:${(Math.random()*8+8).toFixed(1)}s;
-    animation-delay:${(Math.random()*3).toFixed(1)}s;
-  `;
-  floaters.appendChild(e);
-  setTimeout(()=>e.remove(), 14000);
+  const f=document.createElement('span');
+  f.className='fh';
+  f.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  f.style.cssText=`position:absolute;left:${Math.random()*100}vw;bottom:-2rem;font-size:${(Math.random()*1+.6).toFixed(2)}rem;animation-duration:${(Math.random()*8+8).toFixed(1)}s;animation-delay:${(Math.random()*3).toFixed(1)}s`;
+  floaters.appendChild(f);
+  setTimeout(()=>f.remove(),14000);
 }
-setInterval(spawnHeart, 900);
-for(let i=0;i<5;i++) setTimeout(spawnHeart, i*400);
+setInterval(spawnHeart,900);
+for(let i=0;i<6;i++) setTimeout(spawnHeart,i*400);
 </script>
 </body>
 </html>
