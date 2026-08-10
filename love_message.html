@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Love You ❤️</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Quicksand:wght@300;400&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --rose:  #c8445a;
+    --blush: #f2b8c6;
+    --deep:  #1a0a12;
+    --cream: #fdf0f4;
+    --glow:  #ff7fa3;
+  }
+
+  body {
+    background: var(--deep);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Quicksand', sans-serif;
+    overflow: hidden;
+    cursor: default;
+    gap: 1.4rem;
+  }
+
+  canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Card ── */
+  .card {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    border: 1px solid rgba(200,68,90,.25);
+    border-radius: 2.5rem;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1.8rem, 6vw, 5rem);
+    max-width: 500px;
+    width: 90vw;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 80px rgba(200,68,90,.18);
+    animation: cardIn 1.2s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity:0; transform: translateY(40px) scale(.94); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  .heart {
+    display: inline-block;
+    font-size: clamp(3rem, 9vw, 5rem);
+    animation: heartbeat 1.4s ease-in-out infinite;
+    filter: drop-shadow(0 0 18px var(--rose));
+    margin-bottom: 1rem;
+  }
+
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    14%     { transform: scale(1.25); }
+    28%     { transform: scale(1.08); }
+    42%     { transform: scale(1.22); }
+    70%     { transform: scale(1); }
+  }
+
+  .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.6rem, 8vw, 4.5rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: .4rem;
+    animation: fadeUp 1s .4s both;
+  }
+
+  .headline em {
+    font-style: normal;
+    color: var(--glow);
+    text-shadow: 0 0 24px rgba(255,127,163,.55);
+  }
+
+  .name-line {
+    font-size: clamp(.8rem, 2.2vw, .95rem);
+    color: var(--blush);
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    opacity: .7;
+    animation: fadeUp 1s .6s both;
+    margin-bottom: .5rem;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(16px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* ── Message bubble box ── */
+  .msg-box {
+    position: relative;
+    z-index: 10;
+    max-width: 500px;
+    width: 90vw;
+    animation: cardIn 1.2s .3s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  /* ── Tap hint ── */
+  .tap-hint {
+    font-size: .82rem;
+    color: rgba(242,184,198,.55);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: .7rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity:.55; }
+    50%     { opacity:1; }
+  }
+
+  /* ── Bubble ── */
+  .bubble {
+    background: linear-gradient(135deg, rgba(200,68,90,.18), rgba(107,26,46,.22));
+    border: 1px solid rgba(200,68,90,.3);
+    border-radius: 1.6rem 1.6rem 1.6rem .4rem;
+    padding: 1.1rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .12s, box-shadow .12s;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 30px rgba(200,68,90,.1);
+    margin-bottom: .6rem;
+  }
+
+  .bubble:active { transform: scale(.97); }
+  .bubble:hover  { box-shadow: 0 0 30px rgba(255,127,163,.22); }
+
+  /* hidden state */
+  .bubble-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 2.8vw, 1.15rem);
+    font-weight: 300;
+    color: rgba(253,240,244,.85);
+    line-height: 1.7;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .5s ease, transform .5s ease;
+    pointer-events: none;
+  }
+
+  .bubble.revealed .bubble-text {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* tap icon shown before reveal */
+  .tap-icon {
+    font-size: 1.6rem;
+    opacity: .45;
+    transition: opacity .3s;
+    position: absolute;
+  }
+
+  .bubble.revealed .tap-icon { opacity: 0; pointer-events: none; }
+
+  /* ── Progress dots ── */
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    margin-top: .8rem;
+  }
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(200,68,90,.3);
+    transition: background .4s, transform .3s;
+  }
+
+  .dot.done {
+    background: var(--rose);
+    transform: scale(1.2);
+  }
+
+  /* ── Floaters ── */
+  .floaters { position: fixed; inset:0; pointer-events:none; z-index:5; }
+  .fh {
+    position: absolute;
+    animation: floatUp linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes floatUp {
+    0%   { opacity:0; transform: translateY(0) scale(.6); }
+    15%  { opacity:.7; }
+    85%  { opacity:.4; }
+    100% { opacity:0; transform: translateY(-100vh) scale(1.1); }
+  }
+
+  /* ── Final reveal ── */
+  .final-msg {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    background: rgba(26,10,18,.92);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .8s;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .final-msg.show { opacity: 1; pointer-events: all; }
+
+  .final-big {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--glow);
+    text-shadow: 0 0 40px rgba(255,127,163,.6);
+    animation: none;
+  }
+
+  .final-sub {
+    font-size: clamp(.9rem, 2.5vw, 1.1rem);
+    color: var(--blush);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    opacity: .75;
+  }
+
+  .restart-btn {
+    margin-top: 1.5rem;
+    background: transparent;
+    border: 1px solid rgba(200,68,90,.5);
+    color: var(--blush);
+    font-family: 'Quicksand', sans-serif;
+    font-size: .85rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: .65rem 1.8rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: background .3s, border-color .3s;
+  }
+  .restart-btn:hover { background: rgba(200,68,90,.15); border-color: var(--rose); }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+<div class="floaters" id="floaters"></div>
+
+<!-- Top card -->
+<div class="card">
+  <div class="heart">❤️</div>
+  <h1 class="headline">I <em>Love</em> You</h1>
+  <p class="name-line">tap each heart to reveal</p>
+</div>
+
+<!-- Tap messages -->
+<div class="msg-box">
+  <p class="tap-hint">💬 tap to open each message</p>
+  <div id="bubbles"></div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<!-- Final full-screen reveal -->
+<div class="final-msg" id="finalMsg">
+  <div style="font-size:3.5rem">💖</div>
+  <div class="final-big">You are my everything</div>
+  <div class="final-sub">always &amp; forever, with all my heart</div>
+  <button class="restart-btn" onclick="restart()">↩ read again</button>
+</div>
+
+<script>
+const MESSAGES = [
+  "You make every ordinary day feel magical ✨",
+  "Your smile is my favourite thing in the whole world 🌸",
+  "I fall for you a little more every single day 💫",
+  "You are my safe place, my peace, my home 🏡",
+  "Loving you is the best thing I have ever done ❤️",
+  "With you, forever would not be enough 🌹",
+];
+
+const container = document.getElementById('bubbles');
+const dotsEl    = document.getElementById('dots');
+let revealed = 0;
+
+MESSAGES.forEach((msg, i) => {
+  // bubble
+  const b = document.createElement('div');
+  b.className = 'bubble';
+  b.innerHTML = `<span class="tap-icon">💌</span><span class="bubble-text">${msg}</span>`;
+  b.addEventListener('click', () => revealBubble(b, i));
+  b.addEventListener('touchstart', e => { e.preventDefault(); revealBubble(b, i); }, {passive:false});
+  container.appendChild(b);
+
+  // dot
+  const d = document.createElement('div');
+  d.className = 'dot';
+  d.id = 'dot-' + i;
+  dotsEl.appendChild(d);
+});
+
+function revealBubble(b, i) {
+  if (b.classList.contains('revealed')) return;
+  b.classList.add('revealed');
+  document.getElementById('dot-' + i).classList.add('done');
+  burst(b);
+  revealed++;
+  if (revealed === MESSAGES.length) {
+    setTimeout(() => {
+      document.getElementById('finalMsg').classList.add('show');
+      bigBurst();
+    }, 800);
+  }
+}
+
+function restart() {
+  document.getElementById('finalMsg').classList.remove('show');
+  revealed = 0;
+  document.querySelectorAll('.bubble').forEach((b,i) => {
+    b.classList.remove('revealed');
+    document.getElementById('dot-'+i).classList.remove('done');
+  });
+}
+
+/* ── Burst effect on tap ── */
+const floaters = document.getElementById('floaters');
+const emojis = ['❤️','💗','🌸','💕','💖','🌹','✨'];
+
+function burst(el) {
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top  + rect.height/2;
+  for (let i = 0; i < 10; i++) {
+    const e = document.createElement('span');
+    e.className = 'fh';
+    e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    e.style.cssText = `
+      position:fixed;
+      left:${cx}px; top:${cy}px;
+      font-size:${(Math.random()*.8+.8).toFixed(2)}rem;
+      animation: floatUp ${(Math.random()*1.5+1.2).toFixed(1)}s ease-out forwards;
+      transform: translate(${(Math.random()*80-40).toFixed(0)}px, 0);
+    `;
+    floaters.appendChild(e);
+    setTimeout(() => e.remove(), 3000);
+  }
+}
+
+function bigBurst() {
+  for (let i = 0; i < 40; i++) {
+    setTimeout(() => {
+      const e = document.createElement('span');
+      e.className = 'fh';
+      e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      e.style.cssText = `
+        position:fixed;
+        left:${Math.random()*100}vw;
+        bottom:-2rem;
+        font-size:${(Math.random()*1.5+1).toFixed(2)}rem;
+        animation: floatUp ${(Math.random()*4+4).toFixed(1)}s linear forwards;
+      `;
+      floaters.appendChild(e);
+      setTimeout(() => e.remove(), 9000);
+    }, i * 80);
+  }
+}
+
+/* ── Starfield canvas ── */
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H, stars = [];
+
+function resize(){
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+for(let i=0;i<140;i++) stars.push({
+  x: Math.random()*1000,
+  y: Math.random()*1000,
+  r: Math.random()*1.4+.3,
+  a: Math.random(),
+  da: (Math.random()*.007+.002)*(Math.random()<.5?1:-1)
+});
+
+function drawCanvas(){
+  ctx.clearRect(0,0,W,H);
+  for(const s of stars){
+    s.x = s.x/1000*W; s.y = s.y/1000*H;
+    s.a += s.da;
+    if(s.a<=0||s.a>=1) s.da*=-1;
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,127,163,${s.a*.65})`;
+    ctx.fill();
+    s.x = s.x/W*1000; s.y = s.y/H*1000;
+  }
+  requestAnimationFrame(drawCanvas);
+}
+drawCanvas();
+
+/* ── Ambient floating hearts ── */
+function spawnHeart(){
+  const e = document.createElement('span');
+  e.className='fh';
+  e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+  e.style.cssText=`
+    position:absolute;
+    left:${Math.random()*100}vw;
+    bottom:-2rem;
+    font-size:${(Math.random()*1+.6).toFixed(2)}rem;
+    animation-duration:${(Math.random()*8+8).toFixed(1)}s;
+    animation-delay:${(Math.random()*3).toFixed(1)}s;
+  `;
+  floaters.appendChild(e);
+  setTimeout(()=>e.remove(), 14000);
+}
+setInterval(spawnHeart, 900);
+for(let i=0;i<5;i++) setTimeout(spawnHeart, i*400);
+</script>
+</body>
+</html>
